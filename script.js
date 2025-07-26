@@ -2,22 +2,28 @@ const bookForm = document.getElementById("bookForm");
 const bookList = document.getElementById("bookList");
 let books = JSON.parse(localStorage.getItem("books")) || [];
 
-// Render the book list on the page
 function renderBooks() {
+  const searchTerm = document.getElementById("searchInput").value.toLowerCase();
   bookList.innerHTML = "";
+
   books.forEach((book, index) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <div>
-        <strong>${book.title}</strong><br />
-        <em>${book.author}</em><br />
-        <small>${book.genre} — ${book.year}</small>
-      </div>
-      <button onclick="removeBook(${index})">Remove</button>
-    `;
-    bookList.appendChild(li);
+    const fullText = `${book.title} ${book.author} ${book.genre} ${book.year}`.toLowerCase();
+
+    if (fullText.includes(searchTerm)) {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <div>
+          <strong>${book.title}</strong><br />
+          <em>${book.author}</em><br />
+          <small>${book.genre} — ${book.year}</small>
+        </div>
+        <button onclick="removeBook(${index})">Remove</button>
+      `;
+      bookList.appendChild(li);
+    }
   });
 }
+
 
 // Remove a book
 function removeBook(index) {
@@ -95,3 +101,5 @@ if ("serviceWorker" in navigator) {
 }
 
 renderBooks();
+document.getElementById("searchInput").addEventListener("input", renderBooks);
+
